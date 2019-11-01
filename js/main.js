@@ -2,8 +2,8 @@ import AreaChart from './AreaChart.js';
 import BarChart from './BarChart.js';
 // chart vars
 let areaChart = AreaChart()
-.curve(d3.curveStep)
-.on('zoomed', zoomed);
+    .curve(d3.curveStep)
+    .on('zoomed', zoomed);
 let barChart = BarChart();
 
 let countVis = d3.select('#countvis');
@@ -24,22 +24,26 @@ Promise.all([ // load multiple files
 ]).then(data=>{
     let perDayData = data[0];
     let metaData = data[1];
-    // console.log(perDayData, metaData);
+    console.log(perDayData, metaData);
     
     // draw all count chart
     viewData = transform(perDayData, metaData);
     dateRange = d3.extent(viewData,d=>d.time);
-    // console.log('viewData', viewData, dateRange);
+    console.log('viewData', viewData, dateRange);
     
     countVis.datum(viewData)
     .call(areaChart);
     
     zoomed(dateRange);
+    drawAgeChart();
+    drawPriorityChart();
     
 });
 function drawAgeChart(){
     // retrieve age data based on filter date range
     let ageData = getAgeData(viewData, dateRange);
+    console.log("ageData")
+    console.log(ageData)
     // adjust bar chart parameters for age chart
     barChart.width(400)
         .x(d=>d.age)
@@ -53,18 +57,26 @@ function drawAgeChart(){
     
     // draw
     ageVis.datum(ageData)
-    .call(barChart);
+        .call(barChart);
     
 }
 function drawPriorityChart(){
     // retrieve priority data based on filter date range
     let priorityData = getPriorityData(viewData, dateRange);
+    console.log("priorityData")
+    console.log(priorityData)
     // Activity I. TODO: adjust bar chart parameters for priority chart
-
+    barChart.width(500)
+        .x(d=>d.votes)
+        .y(d=>d.title)
+        .layout('vertical')
+        .margin({top: 0, right: 0, bottom: 50, left: 250})
     // Activity I. TODO: retrieve xAxis and adjust tick parameters
-
+    barChart.xAxis().tickValues(null);
+    barChart.xAxis().tickFormat(d3.format(".2s"));
     // Activity I. TODO: draw the priority vis
-    
+    priorityVis.datum(priorityData)
+        .call(barChart);
 }
 function getAgeData(data, range){
     let filtered = range===undefined?data:data.filter(function(d){
