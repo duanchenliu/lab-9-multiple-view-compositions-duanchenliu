@@ -72,22 +72,15 @@ export default function BarChart(){
                 xAxis.scale(yScale);// linear
                 yAxis.scale(xScale); // band
 
-                
-                // xScale.range([0, innerWidth])
-                //     .domain([0, d3.max(data, yValue)]);//xValue accessor, abstruct the data(seperate data from vis)
-    
-                // yScale.range([0, innerHeight])
-                //     .domain(data.map(xValue));
-
                 // Activity I. TODO: draw bars
-                g.selectAll('.bar')// like lab 5
+                g.selectAll('.bar')
                     .data(data)
                     .join('rect')
                     .attr('class', 'bar')
                     .attr("fill", "steelblue")
-                    .attr("x", d => xScale(xValue(d)))
-                    .attr("y", d => yScale(yValue(d)))
-                    .attr("width", d => yScale(yValue(d)))
+                    .attr("x", 0)
+                    .attr("y", d => xScale(yValue(d)))
+                    .attr("width", d => yScale(xValue(d)))
                     .attr("height", xScale.bandwidth());
             }
 
