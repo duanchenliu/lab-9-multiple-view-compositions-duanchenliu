@@ -150,11 +150,16 @@ function transform(perDayData, metaData){
     return allData;
 }
 function zoomed(range){
-    // console.log('date range', range);
+    console.log('date range', range);
     d3.select("#time-period-min").text(dateFormatter(range[0]));
     d3.select("#time-period-max").text(dateFormatter(range[1]));
 
     // Activity III. TODO: update dateRage and call bar charts again
+   
+    // dateRange = range;
+
+    // drawPriorityChart();
+    // drawAgeChart();
     
 }
 
