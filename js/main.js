@@ -24,26 +24,25 @@ Promise.all([ // load multiple files
 ]).then(data=>{
     let perDayData = data[0];
     let metaData = data[1];
-    console.log(perDayData, metaData);
+    // console.log(perDayData, metaData);
     
     // draw all count chart
     viewData = transform(perDayData, metaData);
     dateRange = d3.extent(viewData,d=>d.time);
-    console.log('viewData', viewData, dateRange);
+    // console.log('viewData', viewData, dateRange);
     
     countVis.datum(viewData)
     .call(areaChart);
     
     zoomed(dateRange);
+    //added here
     drawAgeChart();
     drawPriorityChart();
-    
+
 });
 function drawAgeChart(){
     // retrieve age data based on filter date range
     let ageData = getAgeData(viewData, dateRange);
-    console.log("ageData")
-    console.log(ageData)
     // adjust bar chart parameters for age chart
     barChart.width(400)
         .x(d=>d.age)
@@ -54,29 +53,29 @@ function drawAgeChart(){
     
     barChart.xAxis().tickValues([10,20,30,40,50,60,70,80,90]);
     barChart.xAxis().tickFormat(null);
-    
-    // draw
+
     ageVis.datum(ageData)
-        .call(barChart);
+    .call(barChart);
     
 }
 function drawPriorityChart(){
     // retrieve priority data based on filter date range
     let priorityData = getPriorityData(viewData, dateRange);
-    console.log("priorityData")
-    console.log(priorityData)
     // Activity I. TODO: adjust bar chart parameters for priority chart
     barChart.width(500)
         .x(d=>d.votes)
         .y(d=>d.title)
         .layout('vertical')
         .margin({top: 0, right: 0, bottom: 50, left: 250})
+
     // Activity I. TODO: retrieve xAxis and adjust tick parameters
     barChart.xAxis().tickValues(null);
     barChart.xAxis().tickFormat(d3.format(".2s"));
+
     // Activity I. TODO: draw the priority vis
     priorityVis.datum(priorityData)
-        .call(barChart);
+    .call(barChart);
+
 }
 function getAgeData(data, range){
     let filtered = range===undefined?data:data.filter(function(d){
@@ -150,20 +149,44 @@ function transform(perDayData, metaData){
     return allData;
 }
 function zoomed(range){
-    console.log('date range', range);
+    // console.log('date range', range);
     d3.select("#time-period-min").text(dateFormatter(range[0]));
     d3.select("#time-period-max").text(dateFormatter(range[1]));
 
-    // Activity III. TODO: update dateRage and call bar charts again
-   
-    // dateRange = range;
-
-    // drawPriorityChart();
-    // drawAgeChart();
+    // Activity III. TODO: update date Range and 
+    // call bar charts again
     
+    let ageData = getAgeData(viewData, range);
+    let priorityData = getPriorityData(viewData, range);
+   
+   
+    // countVis.datum(viewData)
+    // .call(areaChart);
+
+    // // console.log(range);
+    // ageVis.datum(ageData)
+    //     .call(barChart);
+    // // console.log(ageData);
+    priorityVis.datum(priorityData)
+        .call(barChart);
+
+    // drawAgeChart();
+    // drawPriorityChart();
+
 }
 
 d3.select("#reset-zoom").on("click", function(){
     // Activity IV. TODO: Reset Zoom
-    
+
+
+    dateRange = d3.extent(viewData,d=>d.time);
+
+
+    countVis.datum(viewData)
+    .call(areaChart); 
+    zoomed(dateRange);
+
+    //zoom will remember the old data
+
+
 });

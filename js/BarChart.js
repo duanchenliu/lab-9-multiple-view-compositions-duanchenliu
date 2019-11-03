@@ -13,7 +13,6 @@ export default function BarChart(){
     //value accessor
     let xValue = d=>d[0],
     yValue = d=>d[1];
-    
     let layout = 'horizontal'; 
     
     function chart(selection){
@@ -34,24 +33,21 @@ export default function BarChart(){
             // Update canvas sizes
             svg = svg.merge(svgEnter);
             svg.attr("width", width)
-                .attr("height", height)
+            .attr("height", height)
             
             let g = svg.select("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-
+            
             if (layout==='horizontal'){
                 // Activity I. TODO: update scales and axes
-                
-
                 xScale.range([0, innerWidth])
-                        .domain(data.map(xValue));
+                    .domain(data.map(xValue));
                 yScale.range([innerHeight,0])
-                        .domain([0,d3.max(data, yValue)]);
-   
+                    .domain([0,d3.max(data, yValue)]);
+
 
                 // Activity I. TODO: draw bars
-                g.selectAll('.bar')// like lab 5
+                g.selectAll('.bar')
                     .data(data)
                     .join('rect')
                     .attr('class', 'bar')
@@ -60,39 +56,42 @@ export default function BarChart(){
                     .attr("y",d => yScale(yValue(d)))
                     .attr("width", xScale.bandwidth())
                     .attr("height", d => innerHeight - yScale(yValue(d)));
-              
+
             }else{
                 // Activity I. TODO: update scales and axes
-                xScale.range([0, innerHeight])//band
-                    .domain(data.map(yValue));
-                
-                yScale.range([0, innerWidth])//linear
-                    .domain([0,d3.max(data, xValue)]);
+                xScale.range([0, innerHeight])
+                      .domain(data.map(yValue));
+            
+            yScale.range([0, innerWidth])
+                  .domain([0,d3.max(data, xValue)]);
 
-                xAxis.scale(yScale);// linear
-                yAxis.scale(xScale); // band
+            xAxis.scale(yScale);
+            yAxis.scale(xScale); 
+
+
 
                 // Activity I. TODO: draw bars
                 g.selectAll('.bar')
-                    .data(data)
-                    .join('rect')
-                    .attr('class', 'bar')
-                    .attr("fill", "steelblue")
-                    .attr("x", 0)
-                    .attr("y", d => xScale(yValue(d)))
-                    .attr("width", d => yScale(xValue(d)))
-                    .attr("height", xScale.bandwidth());
+                .data(data)
+                .join('rect')
+                .attr('class', 'bar')
+                .attr("fill", "steelblue")
+                .attr("x", 0)
+                .attr("y", d => xScale(yValue(d)))
+                .attr("width", d => yScale(xValue(d)))
+                .attr("height", xScale.bandwidth());
+
             }
 
             // Append x-axis
             g.select('.x-axis')
-                .attr("transform", "translate(0," + innerHeight + ")")
-                 .call(xAxis);
+            .attr("transform", "translate(0," + innerHeight + ")")
+            .call(xAxis);
 
             // Append y-axis
             g.select('.y-axis')
-                 .attr("transform", "translate(0,0)")
-                .call(yAxis);
+            .attr("transform", "translate(0,0)")
+            .call(yAxis);
         });
     }
     

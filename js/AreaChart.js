@@ -18,7 +18,6 @@ export default function AreaChart(){
     zooming = true,
     curve = d3.curveLinear,
     zoom = d3.zoom();
-        
     
     function chart(selection){
         selection.each(function(data){
@@ -75,17 +74,17 @@ export default function AreaChart(){
             // initialize zooming
             if (zooming){
                 // Activity II. TODO
-                zoom.scaleExtent([1,8])
-                    .translateExtent([0,0],[innerWidth,innerHeight])
-                    .extent([[0, 0], [innerWidth, innerHeight]])
-                    .on('zoom', handleZoom);
-                svg.call(zoom); 
-                // zooming=false;
 
+                zoom.scaleExtent([1, 8])
+                .translateExtent([[0, 0], [innerWidth, innerHeight]])
+                .on("zoom", handleZoom);
+
+                
+                svg.call(zoom);
             }else{
                 // Activity II. TODO
-                svg.on('.zoom', null);//refer to d3 doc, reset from the zooming
-                // zooming=true;
+                console.log("22222");
+                svg.on(".zoom", null);
             }
 
             // Append x-axis
@@ -145,34 +144,23 @@ export default function AreaChart(){
 
     function handleZoom(){
         // Activity II. TODO: update xScale's range, the area path, and x-axis
+        //need to fix the svg problem
         let svg = d3.select(this);
-        let innerWidth =  width - margin.left - margin.right;
-        // let copy = xScale.copy()
-        //     .range([0,innerWidth].map(d => d3.event.transform.applyX(d)))//event contain the zooming part
-        //     .domain(svg.datum().map(xValue));
         let rescaleX = d3.event.transform.rescaleX(xScale);
-        console.log(rescaleX.domain());
         xAxis.scale(rescaleX);
-        // xScale.range([0,innerWidth].map(d => d3.event.transform.applyX(d)));
-
-        // console.log('data', svg.datum());
         svg.select('.x-axis').call(xAxis);
         svg.select('path').attr("d", area.x(d=>rescaleX(xValue(d)))); 
 
+
         svg.append("defs")
             .append("clipPath")
-            .attr("id", "clip")
+            .attr("id","clip")
             .append("rect")
-            .attr("width", width)
-            .attr("height", height);
-        
-        
-       
+          .attr("width", width)
+          .attr("height", height);
         // Activity III. TODO: call registered listeners for your custom 'zooomed' event
-       
-
-        // listeners.apply('zoomed', this, [rescaleX.domain()]);
-
+       listeners.apply("zoomed",this,[rescaleX.domain()]);
+  
     }
     
     return chart;
