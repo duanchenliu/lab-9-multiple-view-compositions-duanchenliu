@@ -74,17 +74,15 @@ export default function AreaChart(){
             // initialize zooming
             if (zooming){
                 // Activity II. TODO
-
-                zoom.scaleExtent([1, 8])
+                zoom.scaleExtent([1,8])
                 .translateExtent([[0, 0], [innerWidth, innerHeight]])
-                .on("zoom", handleZoom);
-
-                
+                .extent([[0, 0], [innerWidth, innerHeight]])
+                .on('zoom', handleZoom);
+    
                 svg.call(zoom);
             }else{
                 // Activity II. TODO
-                console.log("22222");
-                svg.on(".zoom", null);
+                svg.on('.zoom', null);//refer to d3 doc
             }
 
             // Append x-axis
@@ -144,23 +142,25 @@ export default function AreaChart(){
 
     function handleZoom(){
         // Activity II. TODO: update xScale's range, the area path, and x-axis
-        //need to fix the svg problem
         let svg = d3.select(this);
+        let innerWidth =  width - margin.left - margin.right;
         let rescaleX = d3.event.transform.rescaleX(xScale);
+    
         xAxis.scale(rescaleX);
+
         svg.select('.x-axis').call(xAxis);
         svg.select('path').attr("d", area.x(d=>rescaleX(xValue(d)))); 
-
-
+       
         svg.append("defs")
             .append("clipPath")
-            .attr("id","clip")
+            .attr("id", "clip")
             .append("rect")
-          .attr("width", width)
-          .attr("height", height);
+            .attr("width", width)
+            .attr("height", height);
+        
         // Activity III. TODO: call registered listeners for your custom 'zooomed' event
-       listeners.apply("zoomed",this,[rescaleX.domain()]);
-  
+        listeners.apply('zoomed', this, [rescaleX.domain()]);
+
     }
     
     return chart;
